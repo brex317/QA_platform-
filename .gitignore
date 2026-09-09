@@ -64,6 +64,8 @@ jspm_packages/
 
 # Angular compilation outputs
 /dist
+dist/
+frontend/dist/
 /tmp
 /out-tsc
 /bazel-out
