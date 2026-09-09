@@ -55,16 +55,14 @@ import { HelpResponse } from '../../../core/models/help-response.model';
           <!-- Content List -->
           <div *ngIf="!isLoading">
             <div *ngIf="helpData && helpData.steps && helpData.steps.length > 0; else noHelp">
-              <ol class="space-y-3">
+              <ul class="space-y-3">
                 <li 
                   *ngFor="let step of helpData.steps"
                   class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-200">
-                  <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 font-semibold text-xs mt-0.5">
-                    {{ step.number }}
-                  </span>
-                  <span class="leading-snug pt-0.5">{{ step.text }}</span>
+                  <span class="w-2 h-2 rounded-full bg-primary-500 dark:bg-primary-400 mt-2 flex-shrink-0"></span>
+                  <span class="leading-relaxed">{{ step.text }}</span>
                 </li>
-              </ol>
+              </ul>
             </div>
 
             <!-- Empty / No Help Fallback -->

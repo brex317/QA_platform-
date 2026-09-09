@@ -1,8 +1,8 @@
 -- ===================================================================
 -- QA-Platform ERP - Contextual Help Seed Data
 -- ===================================================================
--- Purpose: Seeds nav_nodes form-field children and help content
--- Version: 1.0
+-- Purpose: Seeds nav_nodes form-field children and rich help content
+-- Version: 1.1
 -- Created: 2026-09-09
 -- ===================================================================
 
@@ -57,19 +57,19 @@ DECLARE
 BEGIN
 
     -- -------------------------------------------------------------
-    -- 1. Dashboard Module (dashboard)
+    -- 1. Main Root Dashboard (dashboard)
     -- -------------------------------------------------------------
     SELECT id INTO v_node_id FROM nav_nodes WHERE node_key = 'dashboard';
     IF v_node_id IS NOT NULL THEN
         INSERT INTO help_headers (node_id, title, is_active)
-        VALUES (v_node_id, 'Overview Dashboard Guide', TRUE)
+        VALUES (v_node_id, 'Main Dashboard Guide', TRUE)
         ON CONFLICT (node_id) DO UPDATE SET title = EXCLUDED.title RETURNING id INTO v_header_id;
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Review high-level system metrics and key performance indicators.'),
-            (v_header_id, 2, 'Use quick action navigation to jump to module management panels.'),
-            (v_header_id, 3, 'Monitor pending approval workflows and system notifications.');
+            (v_header_id, 1, 'Provides a high-level overview of key organization performance indicators, pending approvals, and active workforce metrics.'),
+            (v_header_id, 2, 'Use quick action links to access major ERP modules including HRMS, Payroll, Financial Management, and System Settings.'),
+            (v_header_id, 3, 'Monitor real-time system alerts, upcoming payroll cutoff dates, and administrative tasks.');
     END IF;
 
     -- -------------------------------------------------------------
@@ -83,13 +83,14 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Configure payroll setup tables (Allowance Types, Tax Schedules, Pension Rules).'),
-            (v_header_id, 2, 'Define active payroll periods and assign recurring employee allowances.'),
-            (v_header_id, 3, 'Execute payroll runs to calculate net pay, generate journals, and issue payslips.');
+            (v_header_id, 1, 'Centralized payroll control center for configuring pay structures, tax rules, and executing period disbursements.'),
+            (v_header_id, 2, 'Maintain setup tables (Allowance Types, Tax Schedules, Pension Rules) before processing monthly payroll runs.'),
+            (v_header_id, 3, 'Execute monthly payroll calculations, review generated accounting journal entries, and issue itemized payslips.');
     END IF;
 
     -- -------------------------------------------------------------
-    -- 3. Payroll Features     -- -------------------------------------------------------------
+    -- 3. Payroll Features (All 10 Pages)
+    -- -------------------------------------------------------------
 
     -- Feature 1: Payroll Dashboard (hrms.payroll.dashboard)
     SELECT id INTO v_node_id FROM nav_nodes WHERE node_key = 'hrms.payroll.dashboard';
@@ -100,8 +101,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'View current period status, total gross pay, and total net disbursements.'),
-            (v_header_id, 2, 'Check recent payroll run activity and pending period close actions.');
+            (v_header_id, 1, 'Displays active payroll cycle metrics, total gross payroll cost, net payouts, and total tax liabilities.'),
+            (v_header_id, 2, 'Monitor active employee count, pending recurring allowances, and period close status in real time.'),
+            (v_header_id, 3, 'Use action buttons to initiate a new payroll run or navigate directly to period management.');
     END IF;
 
     -- Feature 2: Allowance Types (hrms.payroll.allowance_types)
@@ -113,9 +115,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Click "+ Add Allowance Type" to open the creation dialog.'),
-            (v_header_id, 2, 'Specify the code, name, category (Earning or Deduction), and taxability settings.'),
-            (v_header_id, 3, 'Save component definition to allow assignment to employees.');
+            (v_header_id, 1, 'Defines earning and deduction rules used across the organization.'),
+            (v_header_id, 2, 'Specify taxability and pensionability flags to determine how components affect statutory calculations.'),
+            (v_header_id, 3, 'Mark components as recurring for automatic inclusion in every monthly pay period.');
     END IF;
 
     -- Feature 3: Employee Allowances (hrms.payroll.employee_allowances)
@@ -127,9 +129,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Select an active employee and an allowance type.'),
-            (v_header_id, 2, 'Input the specific amount and effective start date for the recurring payout.'),
-            (v_header_id, 3, 'Save to automatically include in future payroll run calculations.');
+            (v_header_id, 1, 'Assigns specific recurring or one-off allowance amounts to individual employees.'),
+            (v_header_id, 2, 'Filter by department or employee code to review current active compensation assignments.'),
+            (v_header_id, 3, 'Set effective start and end dates for temporary or project-based allowances.');
     END IF;
 
     -- Feature 4: Payroll Periods (hrms.payroll.payroll_periods)
@@ -141,9 +143,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Create monthly or bi-weekly payroll periods with distinct start and end dates.'),
-            (v_header_id, 2, 'Ensure periods are set to Open status before processing payroll runs.'),
-            (v_header_id, 3, 'Close completed periods to freeze adjustments and archive records.');
+            (v_header_id, 1, 'Defines pay cycle date boundaries, cutoff deadlines, and payment release dates.'),
+            (v_header_id, 2, 'Periods must be in Open status before a payroll run can be initiated.'),
+            (v_header_id, 3, 'Close completed periods to finalize accounting records and prevent retroactive edits.');
     END IF;
 
     -- Feature 5: Tax Schedules (hrms.payroll.tax_schedules)
@@ -155,9 +157,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Configure income brackets with statutory tax percentage rates.'),
-            (v_header_id, 2, 'Set statutory deduction offsets according to government tax law.'),
-            (v_header_id, 3, 'Verify bracket order sequence to ensure accurate progressive taxation.');
+            (v_header_id, 1, 'Configures progressive tax brackets in accordance with Ethiopian income tax regulations.'),
+            (v_header_id, 2, 'Define minimum and maximum taxable income thresholds, tax rates (%), and statutory deduction offsets.'),
+            (v_header_id, 3, 'Ensure bracket ranges are contiguous with no gaps or overlapping income bands.');
     END IF;
 
     -- Feature 6: Pension Rules (hrms.payroll.pension_rules)
@@ -169,9 +171,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Define pension contribution rules by employment category.'),
-            (v_header_id, 2, 'Specify the employee deduction percentage rate.'),
-            (v_header_id, 3, 'Specify the employer match percentage rate.');
+            (v_header_id, 1, 'Configures statutory pension contribution rates based on employment classification.'),
+            (v_header_id, 2, 'Set employee contribution percentages (e.g., 7% for permanent staff) and employer matching rates (e.g., 11%).'),
+            (v_header_id, 3, 'Changes apply automatically to gross taxable earnings during payroll calculation.');
     END IF;
 
     -- Feature 7: Payroll Runs (hrms.payroll.payroll_runs)
@@ -183,9 +185,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Click "New Payroll Run" and select an open payroll period.'),
-            (v_header_id, 2, 'Trigger payroll processing to calculate gross, tax, pension, and net pay.'),
-            (v_header_id, 3, 'Review totals and submit for management approval.');
+            (v_header_id, 1, 'Calculates gross pay, tax deductions, pension contributions, and net pay for all active employees.'),
+            (v_header_id, 2, 'Review draft calculations, total disbursements, and summary totals before final approval.'),
+            (v_header_id, 3, 'Approved payroll runs lock period values and generate journal vouchers and payslips.');
     END IF;
 
     -- Feature 8: Payroll Journals (hrms.payroll.payroll_journals)
@@ -197,8 +199,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Review general ledger debit and credit entries generated from payroll runs.'),
-            (v_header_id, 2, 'Verify account code mapping for salary expense, tax payable, and net cash.');
+            (v_header_id, 1, 'Generates automated debit and credit double-entry accounting records for approved payroll runs.'),
+            (v_header_id, 2, 'Maps salary expenses, tax payables, pension liabilities, and net salary bank clearing accounts.'),
+            (v_header_id, 3, 'Export journal entries to the Financial Management System (FMS) for general ledger posting.');
     END IF;
 
     -- Feature 9: Payslips (hrms.payroll.payslips)
@@ -210,8 +213,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Search for employee payslips by period or employee name.'),
-            (v_header_id, 2, 'Download or print individual itemized payment advice statements.');
+            (v_header_id, 1, 'Access detailed itemized payment advice statements for all employees across historical periods.'),
+            (v_header_id, 2, 'Displays basic salary, itemized earnings, tax deductions, pension contributions, and final net pay.'),
+            (v_header_id, 3, 'Print or export digital PDF payslips for employee distribution.');
     END IF;
 
     -- Feature 10: Reports (hrms.payroll.reports)
@@ -223,8 +227,9 @@ BEGIN
 
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Select a report category (Tax Summary, Pension Contributions, Bank Disbursement).'),
-            (v_header_id, 2, 'Filter by date range or department and click Generate Report.');
+            (v_header_id, 1, 'Generates statutory compliance reports including Tax Summary, Pension Contribution Schedule, and Bank Transfer advice.'),
+            (v_header_id, 2, 'Filter reports by payroll period, department, cost center, or employment type.'),
+            (v_header_id, 3, 'Export generated reports to Excel or PDF format for audit and reporting.');
     END IF;
 
     -- -------------------------------------------------------------
@@ -245,7 +250,7 @@ BEGIN
         ON CONFLICT (node_id) DO UPDATE SET title = EXCLUDED.title RETURNING id INTO v_header_id;
         DELETE FROM help_details WHERE help_header_id = v_header_id;
         INSERT INTO help_details (help_header_id, step_number, step_text) VALUES
-            (v_header_id, 1, 'Enter a unique short code for the allowance (e.g. ALW-HSG).');
+            (v_header_id, 1, 'Enter a unique short code for the allowance (e.g., ALW-HSG).');
     END IF;
 
     SELECT id INTO v_node_id FROM nav_nodes WHERE node_key = 'hrms.payroll.allowance_types.name';
