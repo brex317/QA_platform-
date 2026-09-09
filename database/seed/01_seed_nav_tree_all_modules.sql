@@ -180,10 +180,6 @@ VALUES
     ('system.system_settings', (SELECT id FROM nav_nodes WHERE node_key = 'system_management'), 'System Settings', '/system/settings', 'tools', 4, 2, TRUE);
 
 -- ===================================================================
--- ADDITIONAL UTILITY NODE: Sign Out
--- ===================================================================
-INSERT INTO nav_nodes (node_key, parent_id, title, route_url, icon, display_order, depth, is_active)
-VALUES ('sign_out', NULL, 'Sign out', '/sign-out', 'sign-out-alt', 99, 1, TRUE);
 
 -- ===================================================================
 -- Verification Query

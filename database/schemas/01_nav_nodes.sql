@@ -1,13 +1,6 @@
 -- ===================================================================
 -- QA-Platform ERP - Navigation Nodes Schema
--- ===================================================================
--- Purpose: Dynamic, database-driven hierarchical navigation structure
--- Version: 1.0
--- Created: 2026-09-08
--- ===================================================================
-
--- Drop table if exists (for clean re-creation)
-DROP TABLE IF EXISTS nav_nodes CASCADE;
+ 
 
 -- Create nav_nodes table
 CREATE TABLE nav_nodes (
