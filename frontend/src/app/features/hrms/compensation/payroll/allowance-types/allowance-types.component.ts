@@ -7,6 +7,7 @@ import { DynamicTableComponent, TableColumn, TableAction } from '../../../../../
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
+import { HelpFieldDirective } from '../../../../../shared/directives/help-field.directive';
 
 @Component({
   selector: 'app-allowance-types',
@@ -18,7 +19,8 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
     BadgeComponent,
     DynamicTableComponent,
     PaginationComponent,
-    ModalComponent
+    ModalComponent,
+    HelpFieldDirective
   ],
   template: `
     <div class="space-y-6">
@@ -126,6 +128,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           <input
             type="text"
             [(ngModel)]="formData.systemComponent"
+            appHelpField="hrms.payroll.allowance_types.system_component"
             name="systemComponent"
             class="w-full rounded-md border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text px-3 py-2 focus:border-primary-500 focus:ring-primary-500"
             placeholder="e.g., BASIC_SALARY">
@@ -138,6 +141,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           <input
             type="text"
             [(ngModel)]="formData.code"
+            appHelpField="hrms.payroll.allowance_types.code"
             name="code"
             class="w-full rounded-md border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text px-3 py-2 focus:border-primary-500 focus:ring-primary-500"
             placeholder="e.g., BS">
@@ -150,6 +154,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           <input
             type="text"
             [(ngModel)]="formData.name"
+            appHelpField="hrms.payroll.allowance_types.name"
             name="name"
             class="w-full rounded-md border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text px-3 py-2 focus:border-primary-500 focus:ring-primary-500"
             placeholder="e.g., Basic Salary">
@@ -161,6 +166,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           </label>
           <select
             [(ngModel)]="formData.type"
+            appHelpField="hrms.payroll.allowance_types.type"
             name="type"
             class="w-full rounded-md border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text px-3 py-2 focus:border-primary-500 focus:ring-primary-500">
             <option value="EARNING">Earning</option>
@@ -173,6 +179,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
             <input
               type="checkbox"
               [(ngModel)]="formData.isTaxable"
+              appHelpField="hrms.payroll.allowance_types.is_taxable"
               name="isTaxable"
               class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Taxable</span>
@@ -182,6 +189,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
             <input
               type="checkbox"
               [(ngModel)]="formData.isPensionable"
+              appHelpField="hrms.payroll.allowance_types.is_pensionable"
               name="isPensionable"
               class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Pensionable</span>
@@ -191,6 +199,7 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
             <input
               type="checkbox"
               [(ngModel)]="formData.isRecurring"
+              appHelpField="hrms.payroll.allowance_types.is_recurring"
               name="isRecurring"
               class="rounded border-gray-300 text-primary-600 focus:ring-primary-500">
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Recurring</span>

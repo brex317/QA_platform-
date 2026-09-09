@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { TopbarComponent } from '../topbar/topbar.component';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { HelpWidgetComponent } from '../../shared/components/help-widget/help-widget.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, TopbarComponent, SidebarComponent],
+  imports: [CommonModule, RouterOutlet, TopbarComponent, SidebarComponent, HelpWidgetComponent],
   template: `
     <div class="min-h-screen bg-gray-50 dark:bg-dark-bg">
       <!-- Sidebar -->
@@ -28,11 +29,14 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
           (sidebarToggle)="toggleSidebar()">
         </app-topbar>
 
-        <!-- Page content -->
-        <main class="p-6">
+        <!-- Page content with bottom padding for floating widget clearance -->
+        <main class="p-6 pb-24">
           <router-outlet></router-outlet>
         </main>
       </div>
+
+      <!-- Global Floating Contextual Help Widget -->
+      <app-help-widget></app-help-widget>
     </div>
   `,
   styles: []
