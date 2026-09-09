@@ -4,7 +4,6 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using QA_Platform.Application.Help.DTOs;
 using QA_Platform.Application.Help.Interfaces;
-using QA_Platform.Application.Navigation.Interfaces;
 using QA_Platform.Infrastructure.Data;
 
 namespace QA_Platform.Infrastructure.Services;
@@ -12,18 +11,15 @@ namespace QA_Platform.Infrastructure.Services;
 public class HelpService : IHelpService
 {
     private readonly QAPlatformDbContext _context;
-    private readonly INavigationService _navigationService;
     private readonly IMemoryCache _cache;
     private readonly ILogger<HelpService> _logger;
 
     public HelpService(
         QAPlatformDbContext context,
-        INavigationService navigationService,
         IMemoryCache cache,
         ILogger<HelpService> logger)
     {
         _context = context;
-        _navigationService = navigationService;
         _cache = cache;
         _logger = logger;
     }
@@ -35,26 +31,35 @@ public class HelpService : IHelpService
             return new HelpResponseDto { Title = "Help", Steps = new() };
         }
 
-        string cacheKey = $"help_node_{nodeKey.Trim().ToLowerInvariant()}";
-        if (_cache.TryGetValue(cacheKey, out HelpResponseDto? cachedHelp) && cachedHelp != null)
+        string cleanKey = nodeKey.Trim();
+        string cacheKey = $"help_node_{cleanKey.ToLowerInvariant()}";
+
+        if (_cache.TryGetValue(cacheKey, out HelpResponseDto? cachedHelp) && cachedHelp != null && cachedHelp.Steps.Count > 0)
         {
+            _logger.LogInformation("Returning cached help for nodeKey '{NodeKey}' ({Count} steps)", cleanKey, cachedHelp.Steps.Count);
             return cachedHelp;
         }
 
         var response = new HelpResponseDto
         {
-            NodeKey = nodeKey,
+            NodeKey = cleanKey,
             Title = "Quick steps",
             Steps = new List<HelpStepDto>()
         };
 
         try
         {
-            var node = await _navigationService.GetNodeByKeyAsync(nodeKey);
+            var node = await _context.NavNodes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(n => n.NodeKey == cleanKey);
+
             if (node == null)
             {
+                _logger.LogWarning("NavNode not found in database for nodeKey '{NodeKey}'", cleanKey);
                 return response;
             }
+
+            _logger.LogInformation("Resolved nodeKey '{NodeKey}' to NodeId {NodeId}", cleanKey, node.Id);
 
             const string sql = @"
                 WITH RECURSIVE ancestors AS (
@@ -87,6 +92,7 @@ public class HelpService : IHelpService
 
             var param = command.CreateParameter();
             param.ParameterName = "@targetNodeId";
+            param.DbType = DbType.Int64; // EXPLICIT BIGINT TYPING FOR POSTGRESQL CTE
             param.Value = node.Id;
             command.Parameters.Add(param);
 
@@ -107,12 +113,16 @@ public class HelpService : IHelpService
                 });
             }
 
-            // Cache result per nodeKey
-            _cache.Set(cacheKey, response, TimeSpan.FromMinutes(5));
+            _logger.LogInformation("Help CTE query executed for NodeId {NodeId} ({NodeKey}). Found {Count} steps. Title: '{Title}'", node.Id, cleanKey, response.Steps.Count, response.Title);
+
+            if (response.Steps.Count > 0)
+            {
+                _cache.Set(cacheKey, response, TimeSpan.FromMinutes(5));
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error retrieving help content for nodeKey {NodeKey}", nodeKey);
+            _logger.LogError(ex, "Error retrieving help content for nodeKey '{NodeKey}'", cleanKey);
         }
 
         return response;
