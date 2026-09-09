@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QA_Platform.Application.HRMS.Payroll.Interfaces;
 using QA_Platform.Application.Navigation.Interfaces;
 using QA_Platform.Infrastructure.Data;
 using QA_Platform.Infrastructure.Services;
@@ -25,10 +26,17 @@ public static class DependencyInjection
         // Services
         services.AddScoped<INavigationService, NavigationService>();
         
-        // TODO: Register payroll services here when implemented
-        // services.AddScoped<IPayrollDashboardService, PayrollDashboardService>();
-        // services.AddScoped<IAllowanceTypeService, AllowanceTypeService>();
-        // etc.
+        // Payroll Services
+        services.AddScoped<IAllowanceTypeService, AllowanceTypeService>();
+        services.AddScoped<IEmployeeAllowanceService, EmployeeAllowanceService>();
+        services.AddScoped<IPayrollDashboardService, PayrollDashboardService>();
+        services.AddScoped<IPayrollJournalService, PayrollJournalService>();
+        services.AddScoped<IPayrollPeriodService, PayrollPeriodService>();
+        services.AddScoped<IPayrollReportService, PayrollReportService>();
+        services.AddScoped<IPayrollRunService, PayrollRunService>();
+        services.AddScoped<IPayslipService, PayslipService>();
+        services.AddScoped<IPensionRuleService, PensionRuleService>();
+        services.AddScoped<ITaxScheduleService, TaxScheduleService>();
 
         return services;
     }
