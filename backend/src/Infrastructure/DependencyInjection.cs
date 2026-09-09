@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using QA_Platform.Application.Help.Interfaces;
 using QA_Platform.Application.HRMS.Payroll.Interfaces;
 using QA_Platform.Application.Navigation.Interfaces;
 using QA_Platform.Infrastructure.Data;
@@ -25,6 +26,7 @@ public static class DependencyInjection
 
         // Services
         services.AddScoped<INavigationService, NavigationService>();
+        services.AddScoped<IHelpService, HelpService>();
         
         // Payroll Services
         services.AddScoped<IAllowanceTypeService, AllowanceTypeService>();

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using QA_Platform.Domain.Entities.Help;
 using QA_Platform.Domain.Entities.HRMS;
 using QA_Platform.Domain.Entities.Navigation;
 
@@ -15,6 +16,10 @@ public class QAPlatformDbContext : DbContext
 
     // Navigation
     public DbSet<NavNode> NavNodes { get; set; }
+
+    // Help Context
+    public DbSet<HelpHeader> HelpHeaders { get; set; }
+    public DbSet<HelpDetail> HelpDetails { get; set; }
 
     // HRMS - Payroll
     public DbSet<Employee> Employees { get; set; }
