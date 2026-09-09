@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using QA_Platform.Application.Common;
 using QA_Platform.Application.HRMS.Payroll.DTOs;
+using QA_Platform.Application.HRMS.Payroll.Interfaces;
 
 namespace QA_Platform.API.Controllers.HRMS;
 
@@ -8,10 +9,12 @@ namespace QA_Platform.API.Controllers.HRMS;
 [Route("api/hrms/payroll/allowance-types")]
 public class AllowanceTypesController : ControllerBase
 {
+    private readonly IAllowanceTypeService _allowanceTypeService;
     private readonly ILogger<AllowanceTypesController> _logger;
 
-    public AllowanceTypesController(ILogger<AllowanceTypesController> logger)
+    public AllowanceTypesController(IAllowanceTypeService allowanceTypeService, ILogger<AllowanceTypesController> logger)
     {
+        _allowanceTypeService = allowanceTypeService;
         _logger = logger;
     }
 
@@ -26,10 +29,8 @@ public class AllowanceTypesController : ControllerBase
     {
         try
         {
-            // TODO: Implement when IAllowanceTypeService is available
-            var mockData = new List<AllowanceTypeDto>();
-            await Task.CompletedTask;
-            return Ok(ApiResponse<List<AllowanceTypeDto>>.SuccessResponse(mockData, "Allowance types retrieved successfully"));
+            var data = await _allowanceTypeService.GetAllAsync(type, isActive);
+            return Ok(ApiResponse<List<AllowanceTypeDto>>.SuccessResponse(data, "Allowance types retrieved successfully"));
         }
         catch (Exception ex)
         {
@@ -48,9 +49,12 @@ public class AllowanceTypesController : ControllerBase
     {
         try
         {
-            // TODO: Implement when service is available
-            await Task.CompletedTask;
-            return NotFound(ApiResponse<AllowanceTypeDto>.ErrorResponse("Allowance type not found"));
+            var data = await _allowanceTypeService.GetByIdAsync(id);
+            if (data == null)
+            {
+                return NotFound(ApiResponse<AllowanceTypeDto>.ErrorResponse("Allowance type not found"));
+            }
+            return Ok(ApiResponse<AllowanceTypeDto>.SuccessResponse(data));
         }
         catch (Exception ex)
         {
@@ -69,9 +73,8 @@ public class AllowanceTypesController : ControllerBase
     {
         try
         {
-            // TODO: Implement when service is available
-            await Task.CompletedTask;
-            return StatusCode(501, ApiResponse<AllowanceTypeDto>.ErrorResponse("Not yet implemented"));
+            var data = await _allowanceTypeService.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = data.Id }, ApiResponse<AllowanceTypeDto>.SuccessResponse(data, "Allowance type created successfully"));
         }
         catch (Exception ex)
         {
@@ -90,9 +93,13 @@ public class AllowanceTypesController : ControllerBase
     {
         try
         {
-            // TODO: Implement when service is available
-            await Task.CompletedTask;
-            return StatusCode(501, ApiResponse<AllowanceTypeDto>.ErrorResponse("Not yet implemented"));
+            dto.Id = id;
+            var data = await _allowanceTypeService.UpdateAsync(dto);
+            return Ok(ApiResponse<AllowanceTypeDto>.SuccessResponse(data, "Allowance type updated successfully"));
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound(ApiResponse<AllowanceTypeDto>.ErrorResponse("Allowance type not found"));
         }
         catch (Exception ex)
         {
@@ -111,9 +118,12 @@ public class AllowanceTypesController : ControllerBase
     {
         try
         {
-            // TODO: Implement when service is available
-            await Task.CompletedTask;
-            return StatusCode(501, ApiResponse<bool>.ErrorResponse("Not yet implemented"));
+            var success = await _allowanceTypeService.DeleteAsync(id);
+            if (!success)
+            {
+                return NotFound(ApiResponse<bool>.ErrorResponse("Allowance type not found"));
+            }
+            return Ok(ApiResponse<bool>.SuccessResponse(true, "Allowance type deleted successfully"));
         }
         catch (Exception ex)
         {

@@ -19,12 +19,6 @@ export class NavigationService {
    * Get complete navigation tree hierarchy
    */
   getNavigationTree(): Observable<NavNode[]> {
-    // Return mock data immediately for development
-    const mockTree = this.getMockNavigationTree();
-    this.navigationTree$.next(mockTree);
-    return of(mockTree);
-    
-    /* Uncomment when backend is ready:
     return this.http.get<ApiResponse<NavNode[]>>(`${this.apiUrl}/tree`).pipe(
       map(response => response.data || []),
       tap(tree => {
@@ -41,7 +35,6 @@ export class NavigationService {
         return of(mockTree);
       })
     );
-    */
   }
 
   /**

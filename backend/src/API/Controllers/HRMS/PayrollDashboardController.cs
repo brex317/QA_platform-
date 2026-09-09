@@ -1,17 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using QA_Platform.Application.Common;
 using QA_Platform.Application.HRMS.Payroll.DTOs;
+using QA_Platform.Application.HRMS.Payroll.Interfaces;
 
 namespace QA_Platform.API.Controllers.HRMS;
 
 [ApiController]
-[Route("api/hrms/payroll/[controller]")]
+[Route("api/hrms/payroll/dashboard")]
 public class DashboardController : ControllerBase
 {
+    private readonly IPayrollDashboardService _dashboardService;
     private readonly ILogger<DashboardController> _logger;
 
-    public DashboardController(ILogger<DashboardController> logger)
+    public DashboardController(IPayrollDashboardService dashboardService, ILogger<DashboardController> logger)
     {
+        _dashboardService = dashboardService;
         _logger = logger;
     }
 
@@ -24,19 +27,8 @@ public class DashboardController : ControllerBase
     {
         try
         {
-            // TODO: Implement when IPayrollDashboardService is available
-            var mockData = new PayrollDashboardDto
-            {
-                TotalEmployees = 26,
-                ActivePeriod = "2025-01",
-                TotalPayrollRuns = 0,
-                TotalGrossPay = 0,
-                TotalNetPay = 0,
-                Currency = "ETB"
-            };
-
-            await Task.CompletedTask; // Placeholder for async operation
-            return Ok(ApiResponse<PayrollDashboardDto>.SuccessResponse(mockData, "Dashboard summary retrieved successfully"));
+            var data = await _dashboardService.GetDashboardSummaryAsync();
+            return Ok(ApiResponse<PayrollDashboardDto>.SuccessResponse(data, "Dashboard summary retrieved successfully"));
         }
         catch (Exception ex)
         {
