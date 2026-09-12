@@ -1,7 +1,4 @@
--- Drop old versions first, children before parents
-DROP TABLE IF EXISTS help_steps CASCADE;
-DROP TABLE IF EXISTS help_headers CASCADE;
-DROP TABLE IF EXISTS nav_nodes CASCADE;
+
 
 -- Recreate fresh, parents before children
 CREATE TABLE nav_nodes (
