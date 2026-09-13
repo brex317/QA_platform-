@@ -16,15 +16,39 @@ export class HelpService {
 
   constructor(private http: HttpClient) {}
 
-  getHelp(nodeKey: string): Observable<HelpResponse> {
-    return this.http.get<ApiResponse<HelpResponse>>(`${this.apiUrl}/help`, { params: { nodeKey } })
+  /**
+   * Get page-level help steps for a given nodeKey (falls back to parent node if target node has no page help)
+   */
+  getPageHelp(nodeKey: string): Observable<HelpResponse> {
+    return this.http.get<ApiResponse<HelpResponse>>(`${this.apiUrl}/help/page`, { params: { nodeKey } })
       .pipe(
-        map(r => r.data || { nodeKey, title: 'Quick steps', steps: [] }),
+        map(r => r.data || { nodeKey, contextKey: 'page', steps: [] }),
         catchError(err => {
-          console.warn(`Failed to load help content for nodeKey ${nodeKey}:`, err);
-          return of({ nodeKey, title: 'Quick steps', steps: [] });
+          console.warn(`Failed to load page help content for nodeKey ${nodeKey}:`, err);
+          return of({ nodeKey, contextKey: 'page', steps: [] });
         })
       );
+  }
+
+  /**
+   * Get form-level help steps for a given nodeKey and formContext ('add_form')
+   */
+  getFormHelp(nodeKey: string, formContext: string = 'add_form'): Observable<HelpResponse> {
+    return this.http.get<ApiResponse<HelpResponse>>(`${this.apiUrl}/help/form`, { params: { nodeKey, context: formContext } })
+      .pipe(
+        map(r => r.data || { nodeKey, contextKey: formContext, steps: [] }),
+        catchError(err => {
+          console.warn(`Failed to load form help content for nodeKey ${nodeKey}, context ${formContext}:`, err);
+          return of({ nodeKey, contextKey: formContext, steps: [] });
+        })
+      );
+  }
+
+  /**
+   * Legacy method fallback
+   */
+  getHelp(nodeKey: string): Observable<HelpResponse> {
+    return this.getPageHelp(nodeKey);
   }
 
   setActiveFieldNodeKey(nodeKey: string | null): void {

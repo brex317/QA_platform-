@@ -15,22 +15,60 @@ export class NavigationService {
 
   constructor(private http: HttpClient) {}
 
+  private routeIconMap: Record<string, { routeUrl: string | null; icon: string }> = {
+    'dashboard': { routeUrl: '/dashboard', icon: 'dashboard' },
+    'hrms': { routeUrl: null, icon: 'users' },
+    'hrms.compensation': { routeUrl: null, icon: 'cash' },
+    'hrms.compensation.payroll': { routeUrl: null, icon: 'cash' },
+    'hrms.payroll.dashboard': { routeUrl: '/hrms/compensation/payroll/dashboard', icon: 'dashboard' },
+    'hrms.payroll.allowance_types': { routeUrl: '/hrms/compensation/payroll/allowance-types', icon: 'folder' },
+    'hrms.payroll.employee_allowances': { routeUrl: '/hrms/compensation/payroll/employee-allowances', icon: 'users' },
+    'hrms.payroll.payroll_periods': { routeUrl: '/hrms/compensation/payroll/payroll-periods', icon: 'calendar' },
+    'hrms.payroll.tax_schedules': { routeUrl: '/hrms/compensation/payroll/tax-schedules', icon: 'chart' },
+    'hrms.payroll.pension_rules': { routeUrl: '/hrms/compensation/payroll/pension-rules', icon: 'briefcase' },
+    'hrms.payroll.payroll_runs': { routeUrl: '/hrms/compensation/payroll/payroll-runs', icon: 'cash' },
+    'hrms.payroll.payroll_journals': { routeUrl: '/hrms/compensation/payroll/payroll-journals', icon: 'folder' },
+    'hrms.payroll.payslips': { routeUrl: '/hrms/compensation/payroll/payslips', icon: 'document' },
+    'hrms.payroll.reports': { routeUrl: '/hrms/compensation/payroll/reports', icon: 'chart' }
+  };
+
+  private enrichNode(n: any): NavNode {
+    const key = n.key || n.nodeKey || '';
+    const meta = this.routeIconMap[key] || { routeUrl: n.routeUrl || null, icon: n.icon || 'folder' };
+    return {
+      id: n.id,
+      key: key,
+      nodeKey: key,
+      parentId: n.parentId,
+      nodeType: n.nodeType || 'FEATURE',
+      name: n.name || n.title || key,
+      title: n.name || n.title || key,
+      depth: n.depth || 1,
+      isActive: n.isActive ?? true,
+      routeUrl: meta.routeUrl,
+      icon: meta.icon,
+      displayOrder: n.displayOrder || n.id,
+      children: (n.children || []).map((c: any) => this.enrichNode(c))
+    };
+  }
+
   /**
    * Get complete navigation tree hierarchy
    */
   getNavigationTree(): Observable<NavNode[]> {
     return this.http.get<ApiResponse<NavNode[]>>(`${this.apiUrl}/tree`).pipe(
-      map(response => response.data || []),
+      map(response => (response.data || []).map(n => this.enrichNode(n))),
       tap(tree => {
         if (tree && tree.length > 0) {
           this.navigationTree$.next(tree);
         } else {
-          this.navigationTree$.next(this.getMockNavigationTree());
+          const mockTree = this.getMockNavigationTree().map(n => this.enrichNode(n));
+          this.navigationTree$.next(mockTree);
         }
       }),
       catchError(() => {
         console.warn('Failed to load navigation from API, using mock data');
-        const mockTree = this.getMockNavigationTree();
+        const mockTree = this.getMockNavigationTree().map(n => this.enrichNode(n));
         this.navigationTree$.next(mockTree);
         return of(mockTree);
       })

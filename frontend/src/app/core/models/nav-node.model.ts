@@ -1,13 +1,15 @@
 export interface NavNode {
   id: number;
+  key?: string;
   nodeKey: string;
   parentId: number | null;
-  name?: string;  // Alias for title
+  nodeType?: string;
+  name?: string;
   title: string;
-  routeUrl: string | null;
-  icon: string | null;
-  displayOrder: number;
   depth: number;
   isActive: boolean;
+  routeUrl?: string | null;
+  icon?: string | null;
+  displayOrder?: number;
   children: NavNode[];
 }

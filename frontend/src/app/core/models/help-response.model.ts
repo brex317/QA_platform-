@@ -1,10 +1,13 @@
 export interface HelpStep {
-  number: number;
-  text: string;
+  stepNumber: number;
+  stepText: string;
+  number?: number;
+  text?: string;
 }
 
 export interface HelpResponse {
   nodeKey: string;
-  title: string;
+  contextKey: string;
+  title?: string;
   steps: HelpStep[];
 }
