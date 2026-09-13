@@ -21,40 +21,34 @@ public class NavigationService : INavigationService
 
     public async Task<List<NavNodeDto>> GetNavigationTreeAsync()
     {
-        // Try to get from cache first
         if (_cache.TryGetValue(CacheKey, out List<NavNodeDto>? cachedTree) && cachedTree != null)
         {
             return cachedTree;
         }
 
-        // Load all nodes from database
         var allNodes = await _context.NavNodes
+            .AsNoTracking()
             .Where(n => n.IsActive)
-            .OrderBy(n => n.DisplayOrder)
+            .OrderBy(n => n.Id)
             .ToListAsync();
 
-        // Build hierarchical structure
         var nodeDtos = allNodes.Select(n => new NavNodeDto
         {
             Id = n.Id,
-            NodeKey = n.NodeKey,
+            Key = n.Key,
             ParentId = n.ParentId,
-            Title = n.Title,
-            RouteUrl = n.RouteUrl,
-            Icon = n.Icon,
-            DisplayOrder = n.DisplayOrder,
+            NodeType = n.NodeType,
+            Name = n.Name,
             Depth = n.Depth,
             IsActive = n.IsActive
         }).ToList();
 
-        // Build tree structure
         var rootNodes = nodeDtos.Where(n => n.ParentId == null).ToList();
         foreach (var root in rootNodes)
         {
             BuildTree(root, nodeDtos);
         }
 
-        // Cache the result
         _cache.Set(CacheKey, rootNodes, CacheDuration);
 
         return rootNodes;
@@ -63,6 +57,7 @@ public class NavigationService : INavigationService
     public async Task<NavNodeDto?> GetNodeByIdAsync(long id)
     {
         var node = await _context.NavNodes
+            .AsNoTracking()
             .Where(n => n.Id == id && n.IsActive)
             .FirstOrDefaultAsync();
 
@@ -71,12 +66,10 @@ public class NavigationService : INavigationService
         return new NavNodeDto
         {
             Id = node.Id,
-            NodeKey = node.NodeKey,
+            Key = node.Key,
             ParentId = node.ParentId,
-            Title = node.Title,
-            RouteUrl = node.RouteUrl,
-            Icon = node.Icon,
-            DisplayOrder = node.DisplayOrder,
+            NodeType = node.NodeType,
+            Name = node.Name,
             Depth = node.Depth,
             IsActive = node.IsActive
         };
@@ -84,8 +77,10 @@ public class NavigationService : INavigationService
 
     public async Task<NavNodeDto?> GetNodeByKeyAsync(string nodeKey)
     {
+        var cleanKey = nodeKey.Trim();
         var node = await _context.NavNodes
-            .Where(n => n.NodeKey == nodeKey && n.IsActive)
+            .AsNoTracking()
+            .Where(n => n.Key == cleanKey && n.IsActive)
             .FirstOrDefaultAsync();
 
         if (node == null) return null;
@@ -93,12 +88,10 @@ public class NavigationService : INavigationService
         return new NavNodeDto
         {
             Id = node.Id,
-            NodeKey = node.NodeKey,
+            Key = node.Key,
             ParentId = node.ParentId,
-            Title = node.Title,
-            RouteUrl = node.RouteUrl,
-            Icon = node.Icon,
-            DisplayOrder = node.DisplayOrder,
+            NodeType = node.NodeType,
+            Name = node.Name,
             Depth = node.Depth,
             IsActive = node.IsActive
         };
@@ -108,7 +101,7 @@ public class NavigationService : INavigationService
     {
         var children = allNodes
             .Where(n => n.ParentId == parent.Id)
-            .OrderBy(n => n.DisplayOrder)
+            .OrderBy(n => n.Id)
             .ToList();
 
         parent.Children = children;
