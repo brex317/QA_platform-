@@ -7,10 +7,12 @@ import { PaginationComponent } from '../../../../../shared/components/pagination
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-pension-rules',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatCardComponent, DynamicTableComponent, PaginationComponent, ModalComponent],
+  imports: [CommonModule, FormsModule, StatCardComponent, DynamicTableComponent, PaginationComponent, ModalComponent, HelpPanelComponent],
   template: `
     <div class="space-y-6">
       <div class="flex items-center justify-between">
@@ -25,6 +27,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           New Pension Rule
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.pension_rules"></app-help-panel>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <app-stat-card label="Total Rules" [value]="stats.total" icon="folder" iconColor="blue"></app-stat-card>
@@ -41,7 +46,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
 
     <app-modal [isOpen]="isModalOpen" [title]="isEditMode ? 'Edit Pension Rule' : 'New Pension Rule'" 
       [confirmDisabled]="!isFormValid()" (close)="closeModal()" (confirm)="savePensionRule()">
-      <form class="space-y-4">
+      <div class="space-y-4">
+        <app-help-panel nodeKey="hrms.payroll.pension_rules" formContext="add_form"></app-help-panel>
+        <form class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Employment Type <span class="text-red-500">*</span></label>
           <select [(ngModel)]="formData.employmentType" name="employmentType" class="w-full rounded-md border-gray-300 dark:border-dark-border dark:bg-dark-bg dark:text-dark-text px-3 py-2 focus:border-primary-500 focus:ring-primary-500">

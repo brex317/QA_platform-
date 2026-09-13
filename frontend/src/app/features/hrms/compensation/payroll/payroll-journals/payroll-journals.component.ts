@@ -8,10 +8,12 @@ import { PaginationComponent } from '../../../../../shared/components/pagination
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-payroll-journals',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatCardComponent, BadgeComponent, DynamicTableComponent, PaginationComponent, ModalComponent],
+  imports: [CommonModule, FormsModule, StatCardComponent, BadgeComponent, DynamicTableComponent, PaginationComponent, ModalComponent, HelpPanelComponent],
   template: `
     <div class="space-y-6">
       <div class="flex items-center justify-between">
@@ -26,6 +28,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           Post Journal
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.payroll_journals"></app-help-panel>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <app-stat-card label="Total Journals" [value]="stats.total" icon="folder" iconColor="blue"></app-stat-card>

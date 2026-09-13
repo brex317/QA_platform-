@@ -8,6 +8,8 @@ import { PaginationComponent } from '../../../../../shared/components/pagination
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-payroll-periods',
   standalone: true,
@@ -18,7 +20,8 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
     BadgeComponent,
     DynamicTableComponent,
     PaginationComponent,
-    ModalComponent
+    ModalComponent,
+    HelpPanelComponent
   ],
   template: `
     <div class="space-y-6">
@@ -39,6 +42,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           New Period
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.payroll_periods"></app-help-panel>
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

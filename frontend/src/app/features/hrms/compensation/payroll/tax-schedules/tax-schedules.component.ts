@@ -7,10 +7,12 @@ import { PaginationComponent } from '../../../../../shared/components/pagination
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-tax-schedules',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatCardComponent, DynamicTableComponent, PaginationComponent, ModalComponent],
+  imports: [CommonModule, FormsModule, StatCardComponent, DynamicTableComponent, PaginationComponent, ModalComponent, HelpPanelComponent],
   template: `
     <div class="space-y-6">
       <div class="flex items-center justify-between">
@@ -25,6 +27,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           New Tax Bracket
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.tax_schedules"></app-help-panel>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <app-stat-card label="Total Brackets" [value]="stats.total" icon="chart" iconColor="blue"></app-stat-card>

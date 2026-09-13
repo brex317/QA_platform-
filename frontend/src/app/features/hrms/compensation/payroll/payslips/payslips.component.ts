@@ -6,10 +6,12 @@ import { DynamicTableComponent, TableColumn, TableAction } from '../../../../../
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-payslips',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatCardComponent, DynamicTableComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule, StatCardComponent, DynamicTableComponent, PaginationComponent, HelpPanelComponent],
   template: `
     <div class="space-y-6">
       <div class="flex items-center justify-between">
@@ -18,6 +20,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">View and download employee payslips</p>
         </div>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.payslips"></app-help-panel>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <app-stat-card label="Total Payslips" [value]="stats.total" icon="folder" iconColor="blue"></app-stat-card>

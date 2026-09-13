@@ -9,6 +9,8 @@ import { ModalComponent } from '../../../../../shared/components/modal/modal.com
 import { PayrollService } from '../../../../../core/services/payroll.service';
 import { HelpFieldDirective } from '../../../../../shared/directives/help-field.directive';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-allowance-types',
   standalone: true,
@@ -20,7 +22,8 @@ import { HelpFieldDirective } from '../../../../../shared/directives/help-field.
     DynamicTableComponent,
     PaginationComponent,
     ModalComponent,
-    HelpFieldDirective
+    HelpFieldDirective,
+    HelpPanelComponent
   ],
   template: `
     <div class="space-y-6">
@@ -41,6 +44,9 @@ import { HelpFieldDirective } from '../../../../../shared/directives/help-field.
           New Allowance Type
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.allowance_types"></app-help-panel>
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -120,7 +126,9 @@ import { HelpFieldDirective } from '../../../../../shared/directives/help-field.
       [confirmDisabled]="!isFormValid()"
       (close)="closeModal()"
       (confirm)="saveAllowanceType()">
-      <form class="space-y-4">
+      <div class="space-y-4">
+        <app-help-panel nodeKey="hrms.payroll.allowance_types" formContext="add_form"></app-help-panel>
+        <form class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             System Component <span class="text-red-500">*</span>

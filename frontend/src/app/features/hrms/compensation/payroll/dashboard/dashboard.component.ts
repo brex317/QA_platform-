@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-payroll-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HelpPanelComponent],
   template: `
     <div class="space-y-6">
       <!-- Breadcrumb & Header -->
@@ -48,6 +50,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           </button>
         </div>
       </div>
+
+      <!-- Help Panel (Dashboard node has no help_headers row, falls back to parent hrms.compensation.payroll) -->
+      <app-help-panel nodeKey="hrms.payroll.dashboard"></app-help-panel>
 
       <!-- KPI Stat Cards (5 Cards Matching Screenshot 5) -->
       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">

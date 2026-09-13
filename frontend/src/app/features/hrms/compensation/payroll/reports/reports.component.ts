@@ -5,10 +5,12 @@ import { DynamicTableComponent, TableColumn } from '../../../../../shared/compon
 import { PaginationComponent } from '../../../../../shared/components/pagination/pagination.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-payroll-reports',
   standalone: true,
-  imports: [CommonModule, FormsModule, DynamicTableComponent, PaginationComponent],
+  imports: [CommonModule, FormsModule, DynamicTableComponent, PaginationComponent, HelpPanelComponent],
   template: `
     <div class="space-y-6">
       <div class="flex items-center justify-between">
@@ -23,6 +25,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           Export to Excel
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.reports"></app-help-panel>
 
       <!-- Period Selector -->
       <div class="bg-white dark:bg-dark-surface rounded-lg p-4 shadow-sm border border-gray-200 dark:border-dark-border">

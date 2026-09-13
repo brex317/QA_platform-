@@ -8,6 +8,8 @@ import { PaginationComponent } from '../../../../../shared/components/pagination
 import { ModalComponent } from '../../../../../shared/components/modal/modal.component';
 import { PayrollService } from '../../../../../core/services/payroll.service';
 
+import { HelpPanelComponent } from '../../../../../shared/components/help-panel/help-panel.component';
+
 @Component({
   selector: 'app-employee-allowances',
   standalone: true,
@@ -18,7 +20,8 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
     BadgeComponent,
     DynamicTableComponent,
     PaginationComponent,
-    ModalComponent
+    ModalComponent,
+    HelpPanelComponent
   ],
   template: `
     <div class="space-y-6">
@@ -39,6 +42,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
           Assign Allowance
         </button>
       </div>
+
+      <!-- Page Help Panel -->
+      <app-help-panel nodeKey="hrms.payroll.employee_allowances"></app-help-panel>
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -118,7 +124,9 @@ import { PayrollService } from '../../../../../core/services/payroll.service';
       [confirmDisabled]="!isFormValid()"
       (close)="closeModal()"
       (confirm)="saveAllowance()">
-      <form class="space-y-4">
+      <div class="space-y-4">
+        <app-help-panel nodeKey="hrms.payroll.employee_allowances" formContext="add_form"></app-help-panel>
+        <form class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Employee <span class="text-red-500">*</span>

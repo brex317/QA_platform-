@@ -5,7 +5,7 @@ import { Subscription, filter, combineLatest } from 'rxjs';
 import { NavigationService } from '../../../core/services/navigation.service';
 import { HelpService } from '../../../core/services/help.service';
 import { NavNode } from '../../../core/models/nav-node.model';
-import { HelpResponse } from '../../../core/models/help-response.model';
+import { HelpResponse, HelpStep } from '../../../core/models/help-response.model';
 
 @Component({
   selector: 'app-help-widget',
@@ -60,7 +60,7 @@ import { HelpResponse } from '../../../core/models/help-response.model';
                   *ngFor="let step of helpData.steps"
                   class="flex items-start gap-3 text-sm text-gray-700 dark:text-gray-200">
                   <span class="w-2 h-2 rounded-full bg-primary-500 dark:bg-primary-400 mt-2 flex-shrink-0"></span>
-                  <span class="leading-relaxed">{{ step.text }}</span>
+                  <span class="leading-relaxed">{{ getStepText(step) }}</span>
                 </li>
               </ul>
             </div>
@@ -115,7 +115,6 @@ export class HelpWidgetComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // 1. Listen to active field focus events
     this.sub.add(
       this.helpService.activeFieldNodeKey$.subscribe(fieldKey => {
         this.activeFieldKey = fieldKey;
@@ -123,7 +122,6 @@ export class HelpWidgetComponent implements OnInit, OnDestroy {
       })
     );
 
-    // 2. Combine Router events & NavNodes loaded to resolve current route nodeKey
     this.sub.add(
       combineLatest([
         this.router.events.pipe(filter(event => event instanceof NavigationEnd)),
@@ -133,7 +131,6 @@ export class HelpWidgetComponent implements OnInit, OnDestroy {
       })
     );
 
-    // Initial check on load
     this.sub.add(
       this.navigationService.navNodes$.subscribe(nodes => {
         if (nodes.length > 0 && !this.routeNodeKey) {
@@ -154,10 +151,14 @@ export class HelpWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
+  getStepText(step: HelpStep): string {
+    return step.stepText || step.text || '';
+  }
+
   private updateRouteNodeKey(nodes: NavNode[]): void {
     const url = this.router.url;
     const node = this.navigationService.findNodeByRoute(url, nodes);
-    this.routeNodeKey = node ? node.nodeKey : null;
+    this.routeNodeKey = node ? (node.key || node.nodeKey) : null;
     this.resolveAndFetchHelp();
   }
 
@@ -170,19 +171,19 @@ export class HelpWidgetComponent implements OnInit, OnDestroy {
     if (!targetKey) return;
 
     if (this.currentNodeKey === targetKey && this.helpData) {
-      return; // Already up to date
+      return;
     }
 
     this.currentNodeKey = targetKey;
     this.isLoading = true;
 
-    this.helpService.getHelp(targetKey).subscribe({
+    this.helpService.getPageHelp(targetKey).subscribe({
       next: (data) => {
         this.helpData = data;
         this.isLoading = false;
       },
       error: () => {
-        this.helpData = { nodeKey: targetKey, title: 'Quick steps', steps: [] };
+        this.helpData = { nodeKey: targetKey, contextKey: 'page', title: 'Quick steps', steps: [] };
         this.isLoading = false;
       }
     });
