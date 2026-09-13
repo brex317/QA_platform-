@@ -44,5 +44,3 @@ CREATE TABLE help_steps (
     CONSTRAINT uk_help_step UNIQUE (help_header_id, step_number)
 );
 CREATE INDEX idx_help_steps_header ON help_steps(help_header_id);
-
-COMMIT;
