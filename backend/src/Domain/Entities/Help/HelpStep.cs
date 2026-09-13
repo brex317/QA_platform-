@@ -1,6 +1,6 @@
 namespace QA_Platform.Domain.Entities.Help;
 
-public class HelpDetail
+public class HelpStep
 {
     public long Id { get; set; }
     public long HelpHeaderId { get; set; }

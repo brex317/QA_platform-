@@ -19,7 +19,7 @@ public class QAPlatformDbContext : DbContext
 
     // Help Context
     public DbSet<HelpHeader> HelpHeaders { get; set; }
-    public DbSet<HelpDetail> HelpDetails { get; set; }
+    public DbSet<HelpStep> HelpSteps { get; set; }
 
     // HRMS - Payroll
     public DbSet<Employee> Employees { get; set; }
